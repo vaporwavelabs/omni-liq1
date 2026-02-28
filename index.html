@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashflow Metrics | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        
+        :root {
+            --bg-main: #020617;
+            --bg-card: #0f172a;
+            --border-color: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --card-radius: 1rem;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --border-style: solid;
+            --border-width: 1px;
+        }
+
+        .theme-light {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #2563eb;
+            --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+
+        .theme-win98 {
+            --bg-main: #008080;
+            --bg-card: #c0c0c0;
+            --border-color: #ffffff;
+            --text-main: #000000;
+            --text-muted: #424242;
+            --accent: #000080;
+            --card-radius: 0px;
+            --card-shadow: none;
+            --border-style: outset;
+            --border-width: 2px;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-win98 body {
+            font-family: "MS Sans Serif", "Tahoma", sans-serif;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 10px;
+        }
+        
+        .theme-win98 .custom-scrollbar::-webkit-scrollbar {
+            width: 16px;
+        }
+        .theme-win98 .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c0c0c0;
+            border: 2px outset #ffffff;
+            border-radius: 0;
+        }
+
+        .card-themed {
+            background-color: var(--bg-card);
+            border: var(--border-width) var(--border-style) var(--border-color);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .theme-win98 .card-themed {
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+        }
+
+        /* Block Progress Animations */
+        @keyframes block-progress-step {
+            0%, 20% { opacity: 0.2; }
+            40%, 60% { opacity: 1; }
+            80%, 100% { opacity: 0.2; }
+        }
+        .block-step {
+            animation: block-progress-step 1.5s infinite;
+        }
+
+        /* Raining Liquidation Effect */
+        @keyframes rain-fall {
+            0% { transform: translateY(-20px); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(100px); opacity: 0; }
+        }
+        .rain-item {
+            position: absolute;
+            animation: rain-fall 2s linear forwards;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* Flash Animation */
+        @keyframes hud-flash {
+            0% { background-color: rgba(255, 255, 255, 0.8); }
+            100% { background-color: transparent; }
+        }
+        .animate-hud-flash {
+            animation: hud-flash 0.4s ease-out forwards;
+        }
+
+        @keyframes bot-sad-shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-1px); }
+            20%, 40%, 60%, 80% { transform: translateX(1px); }
+        }
+        .animate-bot-sad {
+            animation: bot-sad-shake 0.5s infinite;
+            color: #f43f5e;
+        }
+
+        @keyframes bot-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bot-bounce {
+            animation: bot-bounce 0.6s infinite ease-in-out;
+        }
+
+        /* Cloud Shaking Animation */
+        @keyframes cloud-shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 1px) rotate(-1deg); }
+            75% { transform: translate(1px, 1px) rotate(0deg); }
+        }
+        .animate-cloud-shake {
+            animation: cloud-shake 0.2s infinite ease-in-out;
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        /* Sequential Blinking squares */
+        @keyframes square-blink {
+            0%, 25%, 100% { opacity: 0.2; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 8px currentColor; }
+        }
+        .square-1 { animation: square-blink 1s step-end 0s infinite; }
+        .square-2 { animation: square-blink 1s step-end 0.25s infinite; }
+        .square-3 { animation: square-blink 1s step-end 0.5s infinite; }
+        .square-4 { animation: square-blink 1s step-end 0.75s infinite; }
+
+        .retro-cpu-font {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.05em;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Completion Celebration Animation */
+        @keyframes complete-pulse {
+            0% { border-color: rgba(16, 185, 129, 0.4); }
+            50% { border-color: rgba(16, 185, 129, 1); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+            100% { border-color: rgba(16, 185, 129, 0.4); }
+        }
+        .animate-complete-pulse {
+            animation: complete-pulse 2s infinite ease-in-out;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+</head>
+<body class="min-h-screen">
+    <div id="root"></div>
+</body>
+</html>
